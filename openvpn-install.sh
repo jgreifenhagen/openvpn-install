@@ -257,14 +257,16 @@ set_var EASYRSA_CA_EXPIRE ${ca_validity}
 set_var EASYRSA_CERT_EXPIRE ${cert_validity}
 set_var EASYRSA_CRL_DAYS ${crl_validity}
 	" > /etc/openvpn/server/easy-rsa/vars
-	if [[ -n "$ca_dn" -a "$ca_dn" == "cn_only" ]]; then
-		echo "set_var EASYRSA_DN \"cn_only\"" >> /etc/openvpn/server/easy-rsa/vars
-		if [[ -n "$ca_country" ]]; then echo "set_var EASYRSA_REQ_COUNTRY $ca_country" >> /etc/openvpn/server/easy-rsa/vars; fi
-		if [[ -n "$ca_province" ]]; then echo "set_var EASYRSA_REQ_PROVINCE $ca_province" >> /etc/openvpn/server/easy-rsa/vars; fi
-		if [[ -n "$ca_city" ]]; then echo "set_var EASYRSA_REQ_CITY $ca_city" >> /etc/openvpn/server/easy-rsa/vars; fi
-		if [[ -n "$ca_org" ]]; then echo "set_var EASYRSA_REQ_ORG $ca_org" >> /etc/openvpn/server/easy-rsa/vars; fi
-		if [[ -n "$ca_email" ]]; then echo "set_var EASYRSA_REQ_EMAIL $ca_email" >> /etc/openvpn/server/easy-rsa/vars; fi
-		if [[ -n "$ca_ou" ]]; then echo "set_var EASYRSA_REQ_OU $ca_ou" >> /etc/openvpn/server/easy-rsa/vars; fi
+	if [[ -n "$ca_dn" ]]; then
+		echo "set_var EASYRSA_DN \"${ca_dn}\"" >> /etc/openvpn/server/easy-rsa/vars
+		if [[ "$ca_dn" == "org" ]]; then
+			if [[ -n "$ca_country" ]]; then echo "set_var EASYRSA_REQ_COUNTRY $ca_country" >> /etc/openvpn/server/easy-rsa/vars; fi
+			if [[ -n "$ca_province" ]]; then echo "set_var EASYRSA_REQ_PROVINCE $ca_province" >> /etc/openvpn/server/easy-rsa/vars; fi
+			if [[ -n "$ca_city" ]]; then echo "set_var EASYRSA_REQ_CITY $ca_city" >> /etc/openvpn/server/easy-rsa/vars; fi
+			if [[ -n "$ca_org" ]]; then echo "set_var EASYRSA_REQ_ORG $ca_org" >> /etc/openvpn/server/easy-rsa/vars; fi
+			if [[ -n "$ca_email" ]]; then echo "set_var EASYRSA_REQ_EMAIL $ca_email" >> /etc/openvpn/server/easy-rsa/vars; fi
+			if [[ -n "$ca_ou" ]]; then echo "set_var EASYRSA_REQ_OU $ca_ou" >> /etc/openvpn/server/easy-rsa/vars; fi
+		fi
 	fi
 	# Create the PKI, set up the CA and the server and client certificates
 	./easyrsa --batch init-pki
