@@ -87,6 +87,7 @@ fi
 
 source $(dirname $(readlink -f $0))/parameters
 
+
 new_client () {
 	# Generates the custom client.ovpn
 	{
@@ -244,7 +245,8 @@ LimitNPROC=infinity" > /etc/systemd/system/openvpn-server@server.service.d/disab
 		systemctl enable --now firewalld.service
 	fi
 	# Get easy-rsa
-	easy_rsa_url='https://github.com/OpenVPN/easy-rsa/releases/download/v3.1.7/EasyRSA-3.1.7.tgz'
+	easy_rsa_release_url='https://api.github.com/repos/OpenVPN/easy-rsa/releases/latest'
+	easy_rsa_url=${wget -qO- "$easy_rsa_release_url" 2>/dev/null || curl -sL "$easy_rsa_release_url" ; } | jq -r ".assets[] | select(.name | test(\"tgz$\")) | .browser_download_url"}
 	mkdir -p /etc/openvpn/server/easy-rsa/
 	{ wget -qO- "$easy_rsa_url" 2>/dev/null || curl -sL "$easy_rsa_url" ; } | tar xz -C /etc/openvpn/server/easy-rsa/ --strip-components 1
 	chown -R root:root /etc/openvpn/server/easy-rsa/
@@ -263,15 +265,9 @@ LimitNPROC=infinity" > /etc/systemd/system/openvpn-server@server.service.d/disab
 	chmod o+x /etc/openvpn/server/
 	# Generate key for tls-crypt
 	openvpn --genkey secret /etc/openvpn/server/tc.key
-	# Create the DH parameters file using the predefined ffdhe2048 group
-	echo '-----BEGIN DH PARAMETERS-----
-MIIBCAKCAQEA//////////+t+FRYortKmq/cViAnPTzx2LnFg84tNpWp4TZBFGQz
-+8yTnc4kmz75fS/jY2MMddj2gbICrsRhetPfHtXV/WVhJDP1H18GbtCFY2VVPe0a
-87VXE15/V8k1mE8McODmi3fipona8+/och3xWKE2rec1MKzKT0g6eXq8CrGCsyT7
-YdEIqUuyyOP7uWrat2DX9GgdT0Kj3jlN9K5W7edjcrsZCwenyO4KbXCeAvzhzffi
-7MA0BM0oNC9hkXL+nOmFg/+OTxIy7vKBg8P+OxtMb61zO7X8vC7CIAXFjvGDfRaD
-ssbzSibBsu/6iGtCOGEoXJf//////////wIBAg==
------END DH PARAMETERS-----' > /etc/openvpn/server/dh.pem
+	# Create the DH parameters file using the predefined ffdhe<keylen> group
+	dh_url="https://raw.githubusercontent.com/internetstandards/dhe_groups/main/ffdhe${key_length}.pem"
+	{ wget -qO- "$dh_url" 2>/dev/null || curl -sL "$dh_url" ; } > /etc/openvpn/server/dh.pem
 	# Generate server.conf
 	echo "local $ip
 port $port

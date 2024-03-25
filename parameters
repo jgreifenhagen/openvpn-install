@@ -1,5 +1,7 @@
 ca_validity=3650
 cert_validity=1800
+# possible values are 2048, 3072, 4096
+key_length=4096
 rw_subnet=10.8.0.0
 rw_subnetmask=255.255.255.0
 rw_cidr=24
