@@ -246,8 +246,7 @@ LimitNPROC=infinity" > /etc/systemd/system/openvpn-server@server.service.d/disab
 	fi
 	# Get easy-rsa
 	easy_rsa_release_url='https://api.github.com/repos/OpenVPN/easy-rsa/releases/latest'
-	easy_rsa_url=$({wget -qO- "$easy_rsa_release_url" 2>/dev/null || curl -sL "$easy_rsa_release_url" ; } | jq -r ".assets[] | select(.name | test(\"tgz$\")) | .browser_download_url")
-	mkdir -p /etc/openvpn/server/easy-rsa/
+	easy_rsa_url=$(wget -qO- "$easy_rsa_release_url" 2>/dev/null || curl -sL "$easy_rsa_release_url" | jq -r '.assets[] | select(.name | test("tgz\\$")) | .browser_download_url')	mkdir -p /etc/openvpn/server/easy-rsa/
 	{ wget -qO- "$easy_rsa_url" 2>/dev/null || curl -sL "$easy_rsa_url" ; } | tar xz -C /etc/openvpn/server/easy-rsa/ --strip-components 1
 	chown -R root:root /etc/openvpn/server/easy-rsa/
 	cd /etc/openvpn/server/easy-rsa/
