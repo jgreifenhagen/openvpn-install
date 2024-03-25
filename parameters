@@ -1,5 +1,13 @@
 ca_validity=3650
 cert_validity=1800
+crl_validity=180
+ca_dn=cn_only
+#ca_country=.
+#ca_province=.
+#ca_city=.
+#ca_org=.
+#ca_email=
+#ca_ou=.
 # possible values are 2048, 3072, 4096
 key_length=4096
 rw_subnet=10.8.0.0
