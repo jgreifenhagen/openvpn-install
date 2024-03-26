@@ -1,15 +1,22 @@
+# Validity of the CA certificate in days
 ca_validity=3650
+# Validity of the client certificate in days
 cert_validity=1800
+# Validity of the CRL in days - this is more an expected update interval
 crl_validity=180
+# Choose if only the Common Name (cn) should be used for the CA certificate's Distiguished Name (DN)
+# valid options are "cn_only" or "org"
 ca_dn=cn_only
+# The CA certificate's data - only used if ca_dn is set to "org"
 #ca_country=.
 #ca_province=.
 #ca_city=.
 #ca_org=.
 #ca_email=
 #ca_ou=.
-# possible values are 2048, 3072, 4096
+# Key lenght used for CA, CLient and DH - possible values are 2048, 3072, 4096
 key_length=4096
+# Client Network settings
 rw_subnet=10.8.0.0
 rw_subnetmask=255.255.255.0
 rw_cidr=24
